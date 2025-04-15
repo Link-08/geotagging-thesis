@@ -8,7 +8,7 @@ import "../css/UserDashboard.css";
 import { MdVerified } from "react-icons/md";
 // End of Gobbledygook
 
-const UserDashboard = ({ darkMode, setDarkMode }) => {
+const UserDashboard = ({ darkMode, setDarkMode, currentUser }) => {
     const [newsItems, setNewsItems] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [showAddBranchModal, setShowAddBranchModal] = useState(false);
@@ -23,34 +23,42 @@ const UserDashboard = ({ darkMode, setDarkMode }) => {
         farmType: "Backyard"
     });
 
-    // Account data
-    const accountData = {
-        status: "Active",
-        memberSince: "January 15, 2025",
-        lastLogin: "April 12, 2025",
-        totalFarms: 2,
-        totalHogs: 34,
-        nextInspection: "April 25, 2026",
-        accountType: "Verified"
+    // Use user data from currentUser prop, fallback to empty/defaults
+    const accountData = currentUser ? {
+        status: currentUser.status || "Active",
+        memberSince: currentUser.memberSince || "N/A",
+        lastLogin: currentUser.lastLogin || "N/A",
+        totalFarms: currentUser.totalFarms || 0,
+        totalHogs: currentUser.totalHogs || 0,
+        nextInspection: currentUser.nextInspection || "N/A",
+        accountType: currentUser.accountType || "Unverified"
+    } : {
+        status: "",
+        memberSince: "",
+        lastLogin: "",
+        totalFarms: 0,
+        totalHogs: 0,
+        nextInspection: "",
+        accountType: ""
     };
 
-    // Farm data - simplified
-    const farmData = [
-        {
-            id: 1,
-            name: "Diaz Farm #1",
-            location: "Brgy. 2",
-            pigCount: 24,
-            type: "Commercial"
-        },
-        {
-            id: 2,
-            name: "Diaz Farm #2",
-            location: "Brgy. Dilao",
-            pigCount: 10,
-            type: "Backyard"
+    // Optionally, fetch user-specific farm data if backend supports it
+    const [farmData, setFarmData] = useState([]);
+    useEffect(() => {
+        if (currentUser && currentUser.uid) {
+            // Example API call for user-specific farm data
+            fetch(`http://localhost:3000/api/user/${currentUser.uid}/farms`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('authToken')}`
+                }
+            })
+            .then(res => res.ok ? res.json() : Promise.resolve([]))
+            .then(data => setFarmData(Array.isArray(data) ? data : []))
+            .catch(() => setFarmData([]));
+        } else {
+            setFarmData([]);
         }
-    ];
+    }, [currentUser]);
 
     useEffect(() => {
         // Simulate fetching news data
@@ -129,14 +137,14 @@ const UserDashboard = ({ darkMode, setDarkMode }) => {
             <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
 
             <div className="user-dashboard-container">
-                <h1>Welcome, Virgilio Jr Diaz</h1>
+                <h1>Welcome, {currentUser ? currentUser.name : 'Guest'}</h1>
 
                 <div className="dashboard-content">
                     {/* Account Status Card */}
                     <div className="account-status-card">
                         <div className="card-header">
                             <h2>Your Account</h2>
-                            <span className="status-badge active">Active</span>
+                            <span className="status-badge active">{accountData.status}</span>
                         </div>
                         <div className="account-info">
                             <div className="info-row">
@@ -160,10 +168,6 @@ const UserDashboard = ({ darkMode, setDarkMode }) => {
                             <div className="info-row">
                                 <span className="info-label">Account Status</span>
                                 <span className="info-value"><MdVerified style={{ color: 'yellow' }} /> {accountData.accountType}</span>
-                            </div>
-                            <div className="info-row">
-                                <span className="info-label">Favorite Relapse Song</span>
-                                <span className="info-value">Cup of Joe - Multo</span>
                             </div>
                             {/* End of Gobbledygook */}
 
