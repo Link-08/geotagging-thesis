@@ -5,7 +5,8 @@ import LoginForm from "./assets/Login";
 import ASFMap from "./assets/ASFMap";
 import SPM from "./assets/SPM";
 import MapFixer from "./assets/MapFixer";
-import Dashboard from "./assets/Dashboard";
+import EmployeeDashboard from "./assets/EmployeeDashboard";
+import UserDashboard from "./assets/UserDashboard";
 
 const App = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -77,44 +78,51 @@ const App = () => {
     };
 
     return (
+        // Dashboard development for now. Uncomment the whole code for whole testing and remove this.
         <Router>
-            <div className={darkMode ? "dark-mode" : ""}>
-                <Routes>
-                    <Route path="/register" element={<RegistrationForm />} />
-                    <Route path="/login" element={
-                        <LoginForm setIsAuthenticated={setIsAuthenticated} handleLogin={handleLogin} />
-                    } />
-                    
-                    <Route path="/" element={
-                        <ProtectedRoute>
-                            <Dashboard 
-                                darkMode={darkMode} 
-                                setDarkMode={setDarkMode} 
-                                isOpen={isOpen} 
-                                setIsOpen={setIsOpen}
-                                currentUser={currentUser}
-                            />
-                        </ProtectedRoute>
-                    } />
-                    
-                    {/* Add routes for other components, passing currentUser */}
-                    <Route path="/asfmap" element={
-                        <ProtectedRoute>
-                            <ASFMap 
-                                position={position} 
-                                setPosition={setPosition}
-                                isOpen={isOpen} 
-                                setIsOpen={setIsOpen}
-                                darkMode={darkMode}
-                                currentUser={currentUser}
-                            />
-                        </ProtectedRoute>
-                    } />
-                    
-                    {/* Add other protected routes here, passing currentUser prop */}
-                </Routes>
-            </div>
+            {/* <EmployeeDashboard darkMode={darkMode} setDarkMode={setDarkMode}/> */}
+            <UserDashboard darkMode={darkMode} setDarkMode={setDarkMode} />
         </Router>
+
+
+        // <Router>
+        //     <div className={darkMode ? "dark-mode" : ""}>
+        //         <Routes>
+        //             <Route path="/register" element={<RegistrationForm />} />
+        //             <Route path="/login" element={
+        //                 <LoginForm setIsAuthenticated={setIsAuthenticated} handleLogin={handleLogin} />
+        //             } />
+                    
+        //             <Route path="/" element={
+        //                 <ProtectedRoute>
+        //                     <EmployeeDashboard 
+        //                         darkMode={darkMode} 
+        //                         setDarkMode={setDarkMode} 
+        //                         isOpen={isOpen} 
+        //                         setIsOpen={setIsOpen}
+        //                         currentUser={currentUser}
+        //                     />
+        //                 </ProtectedRoute>
+        //             } />
+                    
+        //             {/* Add routes for other components, passing currentUser */}
+        //             <Route path="/asfmap" element={
+        //                 <ProtectedRoute>
+        //                     <ASFMap 
+        //                         position={position} 
+        //                         setPosition={setPosition}
+        //                         isOpen={isOpen} 
+        //                         setIsOpen={setIsOpen}
+        //                         darkMode={darkMode}
+        //                         currentUser={currentUser}
+        //                     />
+        //                 </ProtectedRoute>
+        //             } />
+                    
+        //             {/* Add other protected routes here, passing currentUser prop */}
+        //         </Routes>
+        //     </div>
+        // </Router>
     );
 };
 
